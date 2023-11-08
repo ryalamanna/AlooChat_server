@@ -92,30 +92,50 @@ export const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(401, 'Invalid user credentials');
     }
 
-    // const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    //     user._id
-    // );
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+        user._id
+    );
 
     // get the user document ignoring the password and refreshToken field
-    const loggedInUser = await User.findById(user._id).select('-password ');
+    const loggedInUser = await User.findById(user._id).select(
+        '-password -refreshToken'
+    );
 
     // TODO: Add more options to make cookie more secure and reliable
-    // const options = {
-    //     httpOnly: true,
-    //     secure: process.env.NODE_ENV === 'production',
-    // };
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+    };
 
-    return (
-        res
-            .status(200)
-            // .cookie('accessToken', accessToken, options) // set the access token in the cookie
-            // .cookie('refreshToken', refreshToken, options) // set the refresh token in the cookie
-            .json(
-                new ApiResponse(
-                    200,
-                    { user: loggedInUser }, // send access and refresh token in response if client decides to save them by themselves
-                    'User logged in successfully'
-                )
+    return res
+        .status(200)
+        .cookie('accessToken', accessToken, options) // set the access token in the cookie
+        .cookie('refreshToken', refreshToken, options) // set the refresh token in the cookie
+        .json(
+            new ApiResponse(
+                200,
+                { user: loggedInUser, accessToken, refreshToken }, // send access and refresh token in response if client decides to save them by themselves
+                'User logged in successfully'
             )
-    );
+        );
 });
+
+const generateAccessAndRefreshTokens = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        // attach refresh token to the user document to avoid refreshing the access token with multiple refresh tokens
+        user.refreshToken = refreshToken;
+
+        await user.save({ validateBeforeSave: false });
+        return { accessToken, refreshToken };
+    } catch (error) {
+        throw new ApiError(
+            500,
+            'Something went wrong while generating the access token'
+        );
+    }
+};
