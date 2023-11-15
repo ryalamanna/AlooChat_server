@@ -11,9 +11,9 @@ import {
 const router = Router();
 
 router.post('/register', userRegisterValidator(), validate, registerUser);
+router.route('/login').post(userLoginValidator(), validate, loginUser);
 router.get('/', (req, res) => {
     res.send('user');
 });
-router.route('/login').post(userLoginValidator(), validate, loginUser);
 
 export default router;
