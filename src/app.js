@@ -33,6 +33,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public")); // configure static file to save images locally
 app.use(cookieParser());
 
+
 app.get('/' , (req, res) => {
     res.send('Welcome')
 })
