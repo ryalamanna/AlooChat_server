@@ -94,7 +94,7 @@ const initializeSocketIO = (io) => {
     } catch (error) {
       socket.emit(
         ChatEventEnum.SOCKET_ERROR_EVENT,
-        error?.message || "Something went wrong while connecting to the socket."
+        error?.message || "Something went wrong while connecting to the socket. " 
       );
     }
   });
