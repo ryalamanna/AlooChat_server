@@ -9,3 +9,4 @@ export const mongoIdPathVariableValidator = (idName) => {
    param(idName).notEmpty().isMongoId().withMessage(`Invalid ${idName}`),
  ];
 };
+
