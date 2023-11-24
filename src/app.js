@@ -8,6 +8,13 @@ import userRouter from './routes/app/auth/user.routes.js'
 import {initializeSocketIO} from './socket/index.js'
 import chatRouter from './routes/app/chat/chat.routes.js';
 import messageRouter from './routes/app/chat/message.routes.js'
+import dotenv from 'dotenv';
+// Load environment variables based on the environment
+export const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+console.log(envFile);
+dotenv.config({ path: envFile });
+
+
 const app = express();
 const httpServer = createServer(app);
 
@@ -27,7 +34,6 @@ app.use(
         credentials: true,
     })
 ); 
-
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public")); // configure static file to save images locally

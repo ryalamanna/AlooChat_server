@@ -6,9 +6,9 @@
     "type": "module",
     "scripts": {
         "build": "tsc",
-        "start": "tsc & node .",
-        "dev": "nodemon src/index.ts"
-    },
+        "start": "set NODE_ENV=production && node .",
+        "dev": "set NODE_ENV=development && nodemon app.js"
+      },
     "author": "",
     "license": "ISC",
     "dependencies": {

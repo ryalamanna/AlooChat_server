@@ -2,9 +2,10 @@
 import { httpServer } from "./app.js";
 import connectDB from "./db/index.js";
 import dotenv from 'dotenv';
-dotenv.config({
-  path: "./.env",
-});
+// Load environment variables based on the environment
+export const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+console.log(envFile);
+dotenv.config({ path: envFile });
 
 /**
  * Starting from Node.js v14 top-level await is available and it is only available in ES modules.
