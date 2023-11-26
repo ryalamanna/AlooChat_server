@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { verifyJWT } from "../../../middlewares/auth.middlewares.js";
-import {createOrGetAOneOnOneChat, getAllChats , searchAvailableUsers} from '../../../controllers/apps/chat/chat.controllers.js';
+import {createAGroupChat, createOrGetAOneOnOneChat, getAllChats , searchAvailableUsers} from '../../../controllers/apps/chat/chat.controllers.js';
 import { mongoIdPathVariableValidator } from "../../../validators/common/mongodb.validators.js";
 import { validate } from "../../../validators/validate.js";
+import { createAGroupChatValidator } from "../../../validators/apps/chat/chat.validators.js";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router
     validate,
     createOrGetAOneOnOneChat
   );
+router.post("/group" ,(req, res , next)=>{console.log(req.body );next();}, createAGroupChatValidator(), validate, createAGroupChat);
 
 export default router;

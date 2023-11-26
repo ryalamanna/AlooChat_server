@@ -204,3 +204,67 @@ export const createOrGetAOneOnOneChat = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(201, payload, "Chat retrieved successfully"));
 });
+
+
+export const createAGroupChat = asyncHandler(async (req, res) => {
+  const { name, participants } = req.body;
+
+  // Check if user is not sending himself as a participant. This will be done manually
+  if (participants.includes(req.user._id.toString())) {
+    throw new ApiError(
+      400,
+      "Participants array should not contain the group creator"
+    );
+  }
+
+  const members = [...new Set([...participants, req.user._id.toString()])]; // check for duplicates
+
+  if (members.length < 3) {
+    // check after removing the duplicate
+    // We want group chat to have minimum 3 members including admin
+    throw new ApiError(
+      400,
+      "Seems like you have passed duplicate participants."
+    );
+  }
+
+  // Create a group chat with provided members
+  const groupChat = await Chat.create({
+    name,
+    isGroupChat: true,
+    participants: members,
+    admin: req.user._id,
+  });
+
+  // structure the chat
+  const chat = await Chat.aggregate([
+    {
+      $match: {
+        _id: groupChat._id,
+      },
+    },
+    ...chatCommonAggregation(),
+  ]);
+
+  const payload = chat[0];
+
+  if (!payload) {
+    throw new ApiError(500, "Internal server error");
+  }
+
+  // logic to emit socket event about the new group chat added to the participants
+  payload?.participants?.forEach((participant) => {
+    if (participant._id.toString() === req.user._id.toString()) return; // don't emit the event for the logged in use as he is the one who is initiating the chat
+    // emit event to other participants with new chat as a payload
+    emitSocketEvent(
+      req,
+      participant._id?.toString(),
+      ChatEventEnum.NEW_CHAT_EVENT,
+      payload
+    );
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, payload, "Group chat created successfully"));
+});
