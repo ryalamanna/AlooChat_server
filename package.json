@@ -6,8 +6,8 @@
     "type": "module",
     "scripts": {
         "build": "tsc",
-        "start": "set NODE_ENV=production && node .",
-        "dev": "set NODE_ENV=development && nodemon app.js"
+        "start": "set NODE_ENV=production && node src/index.js",
+        "dev": "set NODE_ENV=development && nodemon src/index.js"
       },
     "author": "",
     "license": "ISC",
@@ -29,3 +29,5 @@
         "typescript": "^5.2.2"
     }
 }
+
+

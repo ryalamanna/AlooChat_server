@@ -10,9 +10,11 @@ import chatRouter from './routes/app/chat/chat.routes.js';
 import messageRouter from './routes/app/chat/message.routes.js'
 import dotenv from 'dotenv';
 // Load environment variables based on the environment
-export const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
-console.log(envFile);
-dotenv.config({ path: envFile });
+// export const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+console.log(process.env.NODE_ENV);
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+
+console.log(process.env.MONGODB_URI);
 
 
 const app = express();

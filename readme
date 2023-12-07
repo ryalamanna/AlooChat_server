@@ -1,1 +1,4 @@
 to connect to mongodb using cmd : mongosh
+
+// $env:NODE_ENV = "development" ;  nodemon src/index.js
+// $env:NODE_ENV = "production" ;  nodemon src/index.js
