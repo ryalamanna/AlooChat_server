@@ -4,8 +4,7 @@ export let dbInstance = undefined;
 
 const connectDB = async () => {
     try {
-        const connectionInstance = await mongoose.connect(
-            `${process.env.MONGODB_URI}/chat_db` );
+        const connectionInstance = await mongoose.connect( process.env.MONGODB_URI );
         dbInstance = connectionInstance;
         console.log(
             `MongoDB Connected! Db host: ${connectionInstance.connection.host}\n`

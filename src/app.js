@@ -11,15 +11,18 @@ import messageRouter from './routes/app/chat/message.routes.js'
 import dotenv from 'dotenv';
 // Load environment variables based on the environment
 // export const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
-console.log(process.env.NODE_ENV);
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-
-console.log(process.env.MONGODB_URI);
 
 
 const app = express();
-const httpServer = createServer(app);
 
+const httpServer = createServer(app);
+app.use(
+    cors({
+        origin: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN2],
+        credentials: true,
+    })
+); 
 const io = new Server(httpServer, {
     pingTimeout: 60000,
     cors: {
@@ -30,12 +33,7 @@ const io = new Server(httpServer, {
 
 app.set("io", io); // using set method to mount the `io` instance on the app to avoid usage of `global`
 
-app.use(
-    cors({
-        origin: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN2],
-        credentials: true,
-    })
-); 
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public")); // configure static file to save images locally

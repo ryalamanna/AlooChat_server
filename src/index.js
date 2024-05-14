@@ -3,16 +3,12 @@ import { httpServer } from "./app.js";
 import connectDB from "./db/index.js";
 import dotenv from 'dotenv';
 // Load environment variables based on the environment
-console.log(process.env.NODE_ENV);
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-
-console.log(`.env.${process.env.NODE_ENV}`);
 /**
  * Starting from Node.js v14 top-level await is available and it is only available in ES modules.
  * This means you can not use it with common js modules or Node version < 14.
  */
 const majorNodeVersion = +process.env.NODE_VERSION?.split(".")[0] || 0;
-
 const startServer = () => {
   httpServer.listen(process.env.PORT || 8000, () => {
     console.info(
